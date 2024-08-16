@@ -1,0 +1,6 @@
+mongoose
+bcryptjs
+jsonwebtoken
+express
+cloudinary
+multer
