@@ -12,15 +12,17 @@
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.3",
-    "multer": "^1.4.5-lts.1"
+    "multer": "^1.4.5-lts.1",
+    "tsx": "^4.17.0"
   },
   "name": "blogbackend",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "server.ts",
   "type": "module",
   "scripts": {
-    "dev": "nodemon -r dotenv/config server.ts",
-    "start": "node server.js"
+   "dev": "nodemon --watch . -r dotenv/config --exec tsx server.ts",
+    "start": "node dist/server.js",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",

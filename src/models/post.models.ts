@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { postInterface } from "../interfaces/post.interfaces";
 
 export const imageSchema = new mongoose.Schema(
   {
@@ -14,7 +15,7 @@ export const imageSchema = new mongoose.Schema(
   { _id: false }
 );
 
-const postSchema = new mongoose.Schema(
+const postSchema:mongoose.Schema<postInterface> = new mongoose.Schema<postInterface>(
   {
     title: {
       type: String,
@@ -39,4 +40,4 @@ const postSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export const postModel = mongoose.model("post", postSchema);
+export const postModel = mongoose.model<postInterface>("post", postSchema);

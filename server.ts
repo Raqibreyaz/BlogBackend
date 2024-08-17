@@ -7,6 +7,7 @@ import app from "./app";
 
 const port = process.env.PORT ?? 4000;
 
+
 connectToDatabase().then(() => {
   console.log("database connected");
   app.listen(port, () => {

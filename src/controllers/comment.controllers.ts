@@ -1,6 +1,7 @@
 import { catchAsyncError } from "../utils/catchAsyncError";
 import { ApiError } from "../utils/apiError";
 import { commentModel } from "../models/comment.models";
+import { Request } from "express";
 
 // // Define interfaces for request bodies and query parameters
 // interface CreateCommentRequest extends Request {
@@ -25,11 +26,14 @@ import { commentModel } from "../models/comment.models";
 //   };
 // }
 
+interface providedDataType {
+  content?: string;
+}
 
 const createComment = catchAsyncError(async (req, res, next) => {
   if (!req.params.id) throw new ApiError(400, "post id is required");
 
-  const { content } = req.body;
+  const { content }: providedDataType = req.body;
 
   if (!content)
     throw new ApiError(400, "provide content to create and add comment");
@@ -84,27 +88,27 @@ const fetchComments = catchAsyncError(async (req, res, next) => {
           {
             $project: {
               content: 1,
-              "userDetails.fullname": 1,
+              "userDetails.username": 1,
               "userDetails.image": "$userDetails.image.url",
               createdAt: 1,
             },
           },
         ],
-        commentCount: [{ $count: "filteredTotal" }],
+        commentCount: [{ $count: "totalComments" }],
       },
     },
   ]);
 
   const { data: comments, commentCount } = result[0];
 
-  const filteredTotal = commentCount.length ? commentCount[0].filteredTotal : 0;
+  const totalComments = commentCount.length ? commentCount[0].totalComments : 0;
 
   res.status(200).json({
     success: true,
     message: "comments fetched successfully",
     comments,
-    filteredTotal,
-    totalPages: Math.ceil(filteredTotal / limit),
+    totalComments,
+    totalPages: Math.ceil(totalComments / limit),
   });
 });
 

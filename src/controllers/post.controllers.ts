@@ -5,10 +5,16 @@ import {
   uploadOnCloudinary,
 } from "../utils/cloudinary.js";
 import { postModel } from "../models/post.models";
+import mongoose from "mongoose";
+
+interface providedDataType {
+  title?: string;
+  content?: string;
+}
 
 // this function just adds a new product
 const createPost = catchAsyncError(async (req, res, next) => {
-  const { title, content } = req.body;
+  const { title, content }: providedDataType = req.body;
 
   if (!req.user) throw new ApiError(400, "user not available");
 
@@ -46,6 +52,8 @@ const fetchPosts = catchAsyncError(async (req, res, next) => {
       $match: {
         title: { $regex: search, $options: "i" },
       },
+    },
+    {
       $project: {
         title: 1,
         createdBy: 1,
@@ -70,8 +78,10 @@ const fetchPostDetails = catchAsyncError(async (req, res, next) => {
   const post = await postModel.aggregate([
     {
       $match: {
-        _id: id,
+        _id: mongoose.Types.ObjectId.createFromHexString(id),
       },
+    },
+    {
       $project: {
         title: 1,
         content: 1,
@@ -82,33 +92,29 @@ const fetchPostDetails = catchAsyncError(async (req, res, next) => {
     },
   ]);
 
+  if (post.length === 0) throw new ApiError(400, "post not found");
+
   res.status(200).json({
     success: true,
     message: "post fetched successfully",
-    post,
+    post: post[0],
   });
 });
 
 // this function will be used to update post
 const updatePost = catchAsyncError(async (req, res, next) => {
-  if (!req.params.id)
-    throw new ApiError(400, "provide product id to update product");
+  const post = req.post;
 
-  const {
-    body: { title, content },
-    file,
-  } = req;
+  const { body, file } = req;
+
+  const { title, content }: providedDataType = body;
 
   if (!title && !content && !file)
     throw new ApiError(400, "provide something to update");
 
-  let post = await postModel.findById(req.params.id);
-
   if (!post) throw new ApiError(400, "post not found");
 
   const oldImagePublicId = post.image.public_id;
-
-  let isNewImageProvided = false;
 
   const toUpdate: {
     image?: { url: string; public_id: string };
@@ -118,7 +124,6 @@ const updatePost = catchAsyncError(async (req, res, next) => {
 
   //   when a new image is provided then upload to cloudinary and add to updator object
   if (file) {
-    isNewImageProvided = true;
     const cloudinaryResponse = await uploadOnCloudinary(file.path);
     if (cloudinaryResponse)
       toUpdate.image = {
@@ -134,7 +139,7 @@ const updatePost = catchAsyncError(async (req, res, next) => {
   });
 
   //   after saving the updated post delete the oldImagePublicId if new image was provided
-  if (isNewImageProvided) await deleteFromCloudinary(oldImagePublicId);
+  if (toUpdate.image) await deleteFromCloudinary(oldImagePublicId);
 
   res.status(200).json({
     success: true,
@@ -142,4 +147,21 @@ const updatePost = catchAsyncError(async (req, res, next) => {
   });
 });
 
-export { createPost, fetchPostDetails, fetchPosts, updatePost };
+const deletePost = catchAsyncError(async (req, res, next) => {
+  const post = req.post;
+
+  if (!post) throw new ApiError(404, "post not found");
+
+  // delete the post now
+  await postModel.deleteOne({ _id: post._id });
+
+  // delete  the image of the post from cloudinary
+  await deleteFromCloudinary(post.image.public_id);
+
+  res.status(200).json({
+    success: true,
+    message: "post deleted successfully",
+  });
+});
+
+export { createPost, fetchPostDetails, fetchPosts, updatePost, deletePost };

@@ -4,11 +4,20 @@ import { assignJwtToken } from "../utils/assignJwtToken";
 import { uploadOnCloudinary } from "../utils/cloudinary";
 import { userModel } from "../models/user.models";
 
+interface providedDataType {
+  username?: string;
+  email?: string;
+  password?: string;
+}
+
 const registerUser = catchAsyncError(async (req, res, next) => {
-  let { username, email, password } = req.body;
+  let { username, email, password }:providedDataType = req.body;
 
   if (!username || !email || !password)
     throw new ApiError(400, "Provide all details to register user");
+
+  if (password.length < 8)
+    throw new ApiError(400, "password must be at least 8 characters");
 
   if (await userModel.findOne({ email }))
     throw new ApiError(400, "user with this email already exists");
@@ -34,7 +43,7 @@ const registerUser = catchAsyncError(async (req, res, next) => {
 });
 
 const loginUser = catchAsyncError(async (req, res, next) => {
-  const { email, password } = req.body;
+  const { email, password }:providedDataType = req.body;
 
   if (!email || !password) throw new ApiError(400, "fill full form");
 
@@ -52,8 +61,7 @@ const loginUser = catchAsyncError(async (req, res, next) => {
 const fetchUser = catchAsyncError(async (req, res, next) => {
   if (!req.user) throw new ApiError(400, "user unavailable");
 
-  const userId = req.user?.id ?? "";
-  const user = await userModel.findById(userId).select("-password");
+  const user = await userModel.findById(req.user.id).select("-password");
 
   if (!user) throw new ApiError(404, "user does not exist");
 
