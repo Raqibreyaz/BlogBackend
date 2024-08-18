@@ -11,7 +11,7 @@ interface providedDataType {
 }
 
 const registerUser = catchAsyncError(async (req, res, next) => {
-  let { username, email, password }:providedDataType = req.body;
+  let { username, email, password }: providedDataType = req.body;
 
   if (!username || !email || !password)
     throw new ApiError(400, "Provide all details to register user");
@@ -43,7 +43,7 @@ const registerUser = catchAsyncError(async (req, res, next) => {
 });
 
 const loginUser = catchAsyncError(async (req, res, next) => {
-  const { email, password }:providedDataType = req.body;
+  const { email, password }: providedDataType = req.body;
 
   if (!email || !password) throw new ApiError(400, "fill full form");
 
@@ -61,14 +61,23 @@ const loginUser = catchAsyncError(async (req, res, next) => {
 const fetchUser = catchAsyncError(async (req, res, next) => {
   if (!req.user) throw new ApiError(400, "user unavailable");
 
-  const user = await userModel.findById(req.user.id).select("-password");
+  const result = await userModel.aggregate([
+    { $match: { _id: req.user.id } },
+    {
+      $project: {
+        username: 1,
+        email: 1,
+        image: "$image.url",
+      },
+    },
+  ]);
 
-  if (!user) throw new ApiError(404, "user does not exist");
+  if (result.length === 0) throw new ApiError(404, "user does not exist");
 
   res.status(200).json({
     success: true,
     message: "user fetched successfully",
-    user,
+    user: result[0],
   });
 });
 

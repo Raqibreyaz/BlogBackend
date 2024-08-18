@@ -12,6 +12,19 @@ interface providedDataType {
   content?: string;
 }
 
+interface postType {
+  title: string;
+  content?: string;
+  image: string;
+  createdBy: mongoose.Schema.Types.ObjectId;
+  createdAt: Date;
+}
+
+interface fetchedPostsType {
+  data: postType[];
+  totalPosts: [{ count: number }];
+}
+
 // this function just adds a new product
 const createPost = catchAsyncError(async (req, res, next) => {
   const { title, content }: providedDataType = req.body;
@@ -44,29 +57,72 @@ const createPost = catchAsyncError(async (req, res, next) => {
 // this function is responsible for fetching posts either with search param or direct
 const fetchPosts = catchAsyncError(async (req, res, next) => {
   //  find posts by a given search query param
-  const { search = "" } = req.query;
+  let { search = "", page = 1, limit = 10 } = req.query;
 
+  page = typeof page === "string" ? parseInt(page) : page;
+  limit = typeof limit === "string" ? parseInt(limit) : limit;
+
+  if (
+    typeof page !== "number" ||
+    typeof limit !== "number" ||
+    typeof search !== "string"
+  )
+    throw new ApiError(400, "invalid query params provided");
   //   find all the posts where the title is included in case insensitive mannerF
-  const posts = await postModel.aggregate([
+  const result = await postModel.aggregate([
     {
-      $match: {
-        title: { $regex: search, $options: "i" },
-      },
-    },
-    {
-      $project: {
-        title: 1,
-        createdBy: 1,
-        createdAt: 1,
-        image: "$image.url",
+      $facet: {
+        data: [
+          {
+            $match: {
+              title: { $regex: search, $options: "i" },
+            },
+          },
+          {
+            $skip: (page - 1) * limit,
+          },
+          {
+            $limit: limit,
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "createdBy",
+              foreignField: "_id",
+              as: "creatorDetails",
+            },
+          },
+          { $unwind: "$creatorDetails" },
+          {
+            $project: {
+              title: 1,
+              creator: {
+                _id: "$createdBy",
+                username: "$creatorDetails.username",
+              },
+              createdAt: 1,
+              image: "$image.url",
+            },
+          },
+        ],
+        totalPosts: [
+          {
+            $count: "count",
+          },
+        ],
       },
     },
   ]);
+
+  const { data: posts, totalPosts }: fetchedPostsType = result[0];
+
+  const noOfPosts = totalPosts[0].count;
 
   res.status(200).json({
     success: true,
     message: "posts fetched successfully",
     posts,
+    totalPages: Math.ceil((noOfPosts === 0 ? 1 : noOfPosts) / limit),
   });
 });
 
@@ -82,10 +138,19 @@ const fetchPostDetails = catchAsyncError(async (req, res, next) => {
       },
     },
     {
+      $lookup: {
+        from: "users",
+        localField: "createdBy",
+        foreignField: "_id",
+        as: "creatorDetails",
+      },
+    },
+    { $unwind: "$creatorDetails" },
+    {
       $project: {
         title: 1,
         content: 1,
-        createdBy: 1,
+        creator: { _id: "$createdBy", username: "$creatorDetails.username",image:"$creatorDetails.image.url" },
         createdAt: 1,
         image: "$image.url",
       },

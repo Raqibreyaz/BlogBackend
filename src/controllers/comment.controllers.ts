@@ -1,30 +1,6 @@
 import { catchAsyncError } from "../utils/catchAsyncError";
 import { ApiError } from "../utils/apiError";
 import { commentModel } from "../models/comment.models";
-import { Request } from "express";
-
-// // Define interfaces for request bodies and query parameters
-// interface CreateCommentRequest extends Request {
-//   params: {
-//     id: string;
-//   };
-//   body: {
-//     content: string;
-//   };
-//   user?: {
-//     id: string;
-//   };
-// }
-
-// interface FetchCommentsRequest extends Request {
-//   params: {
-//     id: string;
-//   };
-//   query: {
-//     page?: string | number;
-//     limit?: string | number;
-//   };
-// }
 
 interface providedDataType {
   content?: string;
