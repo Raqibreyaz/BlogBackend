@@ -1,9 +1,10 @@
 import { Response } from "express";
 import jwt from "jsonwebtoken";
-import mongoose from "mongoose";
+import { userInterface } from "../interfaces/user.interfaces";
+import { getEnvironmentVar } from "./getEnvironmentVar";
 
 export const assignJwtToken = (
-  user: mongoose.Document,
+  user: userInterface,
   res: Response,
   message: string
 ) => {
@@ -11,14 +12,16 @@ export const assignJwtToken = (
 
   let token = jwt.sign(
     { id: user._id, email: user.email },
-    process.env.JWT_SECRET_KEY,
-    { expiresIn: process.env.JWT_EXPIRY }
+    getEnvironmentVar("JWT_SECRET_KEY"),
+    { expiresIn: getEnvironmentVar("JWT_EXPIRY") }
   );
 
   res
     .status(200)
     .cookie(tokenName, token, {
-      expires: new Date(Date.now() + process.env.COOKIE_EXPIRY * 1000 * 86400),
+      expires: new Date(
+        Date.now() + parseInt(getEnvironmentVar("COOKIE_EXPIRY")) * 1000 * 86400
+      ),
       httpOnly: true,
     })
     .json({

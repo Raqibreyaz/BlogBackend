@@ -3,6 +3,7 @@ import { catchAsyncError } from "../utils/catchAsyncError";
 import { assignJwtToken } from "../utils/assignJwtToken";
 import { uploadOnCloudinary } from "../utils/cloudinary";
 import { userModel } from "../models/user.models";
+import mongoose from "mongoose";
 
 interface providedDataType {
   username?: string;
@@ -62,7 +63,9 @@ const fetchUser = catchAsyncError(async (req, res, next) => {
   if (!req.user) throw new ApiError(400, "user unavailable");
 
   const result = await userModel.aggregate([
-    { $match: { _id: req.user.id } },
+    {
+      $match: { _id: mongoose.Types.ObjectId.createFromHexString(req.user.id) },
+    },
     {
       $project: {
         username: 1,

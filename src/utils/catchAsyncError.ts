@@ -4,13 +4,17 @@ import { postInterface } from "../interfaces/post.interfaces";
 
 declare module "express-serve-static-core" {
   interface Request {
-    user?: JwtPayload; 
-    post?:postInterface
+    user?: JwtPayload;
+    post?: postInterface;
   }
 }
 
-export const catchAsyncError = (fn:RequestHandler): RequestHandler => {
+export const catchAsyncError = (fn: RequestHandler): RequestHandler => {
   return async (req, res, next) => {
-    Promise.resolve(fn(req, res, next)).catch((error) => next(error));
+    try {
+      await fn(req, res, next);
+    } catch (error) {
+      next(error);
+    }
   };
 };

@@ -1,6 +1,7 @@
 import { catchAsyncError } from "../utils/catchAsyncError";
 import { ApiError } from "../utils/apiError";
 import { commentModel } from "../models/comment.models";
+import mongoose from "mongoose";
 
 interface providedDataType {
   content?: string;
@@ -43,7 +44,13 @@ const fetchComments = catchAsyncError(async (req, res, next) => {
     {
       $facet: {
         data: [
-          { $match: {} },
+          {
+            $match: {
+              postId: mongoose.Types.ObjectId.createFromHexString(
+                req.params.id
+              ),
+            },
+          },
           { $sort: { createdAt: -1 } },
           { $skip: (page - 1) * limit },
           { $limit: limit },
