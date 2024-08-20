@@ -40,15 +40,15 @@ const fetchComments = catchAsyncError(async (req, res, next) => {
   if (typeof page !== "number" || typeof limit !== "number")
     throw new ApiError(400, "page or limit must be a number");
 
+  const postId = mongoose.Types.ObjectId.createFromHexString(req.params.id);
+
   const result = await commentModel.aggregate([
     {
       $facet: {
         data: [
           {
             $match: {
-              postId: mongoose.Types.ObjectId.createFromHexString(
-                req.params.id
-              ),
+              postId,
             },
           },
           { $sort: { createdAt: -1 } },
@@ -77,21 +77,21 @@ const fetchComments = catchAsyncError(async (req, res, next) => {
             },
           },
         ],
-        commentCount: [{ $count: "totalComments" }],
+        commentCount: [{ $match: { postId } }, { $count: "totalComments" }],
       },
     },
   ]);
-
+  
   const { data: comments, commentCount } = result[0];
 
-  const totalComments = commentCount.length ? commentCount[0].totalComments : 0;
+  const totalComments = commentCount.length ? commentCount[0].totalComments : 1;
 
   res.status(200).json({
     success: true,
     message: "comments fetched successfully",
     comments,
     totalComments,
-    totalPages: Math.ceil(totalComments / limit),
+    totalPages: Math.ceil((totalComments === 0 ? 1 : totalComments) / limit),
   });
 });
 
