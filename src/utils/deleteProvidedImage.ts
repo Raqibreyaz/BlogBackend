@@ -6,7 +6,6 @@ export const deleteProvidedImage = (req: Request) => {
     try {
       fs.unlinkSync(req.file.path);
     } catch (error) {
-      // console.log(error);
     }
   }
 };

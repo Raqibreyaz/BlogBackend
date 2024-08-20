@@ -15,7 +15,6 @@ const errorMiddleWare: ErrorRequestHandler = (error, req, res, next) => {
 
   // when image were provided then delete it is waste now
   deleteProvidedImage(req);
-console.log(error);
 
   if (error.code === "11000") {
     error.message = `Duplicate Key Found ${Object.keys(error.keyValue)[0]}`;

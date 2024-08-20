@@ -6,7 +6,6 @@ export const getEnvironmentVar = (variable: string) => {
     if (!value) throw new ApiError(400, "environment variable not setted");
     return value;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
