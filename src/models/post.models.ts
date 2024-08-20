@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { postInterface } from "../interfaces/post.interfaces";
+import { postInterface } from "../interfaces/post.interfaces.js";
 
 export const imageSchema = new mongoose.Schema(
   {

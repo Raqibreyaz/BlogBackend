@@ -1,4 +1,4 @@
-import { ApiError } from "./apiError";
+import { ApiError } from "./apiError.js";
 
 export const getEnvironmentVar = (variable: string) => {
   try {

@@ -1,10 +1,10 @@
-import { catchAsyncError } from "../utils/catchAsyncError";
-import { ApiError } from "../utils/apiError";
+import { catchAsyncError } from "../utils/catchAsyncError.js";
+import { ApiError } from "../utils/apiError.js";
 import {
   deleteFromCloudinary,
   uploadOnCloudinary,
 } from "../utils/cloudinary.js";
-import { postModel } from "../models/post.models";
+import { postModel } from "../models/post.models.js";
 import mongoose from "mongoose";
 
 interface providedDataType {

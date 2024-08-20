@@ -1,18 +1,13 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const post_controllers_1 = require("../controllers/post.controllers");
-const verifyUser_middlewares_1 = require("../middlewares/verifyUser.middlewares");
-const upload_middlewares_1 = require("../middlewares/upload.middlewares");
-const Router = express_1.default.Router();
+import express from "express";
+import { createPost, deletePost, fetchPostDetails, fetchPosts, updatePost, } from "../controllers/post.controllers.js";
+import { verifyCreator, verifyUser, } from "../middlewares/verifyUser.middlewares.js";
+import { upload } from "../middlewares/upload.middlewares.js";
+const Router = express.Router();
 Router.route("/")
-    .get(post_controllers_1.fetchPosts)
-    .post(verifyUser_middlewares_1.verifyUser, upload_middlewares_1.upload.single("image"), post_controllers_1.createPost);
+    .get(fetchPosts)
+    .post(verifyUser, upload.single("image"), createPost);
 Router.route("/:id")
-    .get(post_controllers_1.fetchPostDetails)
-    .put(verifyUser_middlewares_1.verifyUser, verifyUser_middlewares_1.verifyCreator, upload_middlewares_1.upload.single("image"), post_controllers_1.updatePost)
-    .delete(verifyUser_middlewares_1.verifyUser, verifyUser_middlewares_1.verifyCreator, post_controllers_1.deletePost);
-exports.default = Router;
+    .get(fetchPostDetails)
+    .put(verifyUser, verifyCreator, upload.single("image"), updatePost)
+    .delete(verifyUser, verifyCreator, deletePost);
+export default Router;

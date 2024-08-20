@@ -1,6 +1,6 @@
-import { catchAsyncError } from "../utils/catchAsyncError";
-import { ApiError } from "../utils/apiError";
-import { commentModel } from "../models/comment.models";
+import { catchAsyncError } from "../utils/catchAsyncError.js";
+import { ApiError } from "../utils/apiError.js";
+import { commentModel } from "../models/comment.models.js";
 import mongoose from "mongoose";
 
 interface providedDataType {

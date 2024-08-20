@@ -1,10 +1,9 @@
-import mongoose, { MongooseDocumentMiddleware } from "mongoose";
-import { ApiError } from "../utils/apiError";
+import { ApiError } from "../utils/apiError.js";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { Request, RequestHandler } from "express";
-import { postModel } from "../models/post.models";
-import { postInterface } from "../interfaces/post.interfaces";
-import { catchAsyncError } from "../utils/catchAsyncError";
+import { postModel } from "../models/post.models.js";
+import { postInterface } from "../interfaces/post.interfaces.js";
+import { catchAsyncError } from "../utils/catchAsyncError.js";
 
 interface CustomRequest extends Request {
   user?: JwtPayload;

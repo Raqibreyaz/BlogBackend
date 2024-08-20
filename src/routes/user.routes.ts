@@ -4,9 +4,9 @@ import {
   loginUser,
   logoutUser,
   registerUser,
-} from "../controllers/user.controllers";
-import { verifyUser } from "../middlewares/verifyUser.middlewares";
-import { upload } from "../middlewares/upload.middlewares";
+} from "../controllers/user.controllers.js";
+import { verifyUser } from "../middlewares/verifyUser.middlewares.js";
+import { upload } from "../middlewares/upload.middlewares.js";
 
 const Router = express.Router();
 

@@ -1,7 +1,7 @@
 import { Response } from "express";
 import jwt from "jsonwebtoken";
-import { userInterface } from "../interfaces/user.interfaces";
-import { getEnvironmentVar } from "./getEnvironmentVar";
+import { userInterface } from "../interfaces/user.interfaces.js";
+import { getEnvironmentVar } from "./getEnvironmentVar.js";
 
 export const assignJwtToken = (
   user: userInterface,

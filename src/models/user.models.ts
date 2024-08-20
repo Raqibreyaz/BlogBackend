@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { imageSchema } from "./post.models";
-import { userInterface } from "../interfaces/user.interfaces";
-import { getEnvironmentVar } from "../utils/getEnvironmentVar";
+import { imageSchema } from "./post.models.js";
+import { userInterface } from "../interfaces/user.interfaces.js";
+import { getEnvironmentVar } from "../utils/getEnvironmentVar.js";
 
 const userSchema: mongoose.Schema<userInterface> = new mongoose.Schema(
   {

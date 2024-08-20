@@ -1,31 +1,16 @@
-"use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteFromCloudinary = exports.uploadOnCloudinary = void 0;
-const cloudinary_1 = require("cloudinary");
-const fs_1 = __importDefault(require("fs"));
-cloudinary_1.v2.config({
+import { v2 as cloudinary, } from "cloudinary";
+import fs from "fs";
+cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-const uploadOnCloudinary = (filepath) => __awaiter(void 0, void 0, void 0, function* () {
+export const uploadOnCloudinary = async (filepath) => {
     if (!filepath)
         return;
     try {
-        let uploadResponse = yield cloudinary_1.v2.uploader.upload(filepath);
-        fs_1.default.unlinkSync(filepath);
+        let uploadResponse = await cloudinary.uploader.upload(filepath);
+        fs.unlinkSync(filepath);
         return uploadResponse;
     }
     catch (error) {
@@ -38,17 +23,15 @@ const uploadOnCloudinary = (filepath) => __awaiter(void 0, void 0, void 0, funct
             throw new Error(`cloudinary upload error, ${String(error)}`);
         }
     }
-});
-exports.uploadOnCloudinary = uploadOnCloudinary;
-const deleteFromCloudinary = (publicId) => __awaiter(void 0, void 0, void 0, function* () {
+};
+export const deleteFromCloudinary = async (publicId) => {
     if (!publicId)
         return;
     try {
-        let deleteResponse = yield cloudinary_1.v2.uploader.destroy(publicId);
+        let deleteResponse = await cloudinary.uploader.destroy(publicId);
         return deleteResponse;
     }
     catch (error) {
         throw error;
     }
-});
-exports.deleteFromCloudinary = deleteFromCloudinary;
+};

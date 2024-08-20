@@ -1,6 +1,6 @@
 import { RequestHandler, Request } from "express";
 import { JwtPayload } from "jsonwebtoken";
-import { postInterface } from "../interfaces/post.interfaces";
+import { postInterface } from "../interfaces/post.interfaces.js";
 
 declare module "express-serve-static-core" {
   interface Request {

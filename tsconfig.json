@@ -1,9 +1,12 @@
 {
   "compilerOptions": {
     /* Language and Environment */
-    "target": "es2016",                                
+    "target": "ES2023",                                
     /* Modules */
-    "module": "commonjs",                              
+    "module": "NodeNext",           
+    
+    "moduleResolution": "NodeNext",
+    
     /* Emit */
     "outDir": "./dist",                                /* Specify an output folder for all emitted files. */
     // "noEmit": true,                                  /* Disable emitting files from a compilation. */

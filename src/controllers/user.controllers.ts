@@ -1,8 +1,8 @@
-import { ApiError } from "../utils/apiError";
-import { catchAsyncError } from "../utils/catchAsyncError";
-import { assignJwtToken } from "../utils/assignJwtToken";
-import { uploadOnCloudinary } from "../utils/cloudinary";
-import { userModel } from "../models/user.models";
+import { ApiError } from "../utils/apiError.js";
+import { catchAsyncError } from "../utils/catchAsyncError.js";
+import { assignJwtToken } from "../utils/assignJwtToken.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { userModel } from "../models/user.models.js";
 import mongoose from "mongoose";
 
 interface providedDataType {

@@ -1,11 +1,5 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.postModel = exports.imageSchema = void 0;
-const mongoose_1 = __importDefault(require("mongoose"));
-exports.imageSchema = new mongoose_1.default.Schema({
+import mongoose from "mongoose";
+export const imageSchema = new mongoose.Schema({
     url: {
         type: String,
         required: true,
@@ -15,7 +9,7 @@ exports.imageSchema = new mongoose_1.default.Schema({
         required: true,
     },
 }, { _id: false });
-const postSchema = new mongoose_1.default.Schema({
+const postSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
@@ -27,13 +21,13 @@ const postSchema = new mongoose_1.default.Schema({
         minLength: [10, "content must be at least of 10 characters"],
     },
     image: {
-        type: exports.imageSchema,
+        type: imageSchema,
         required: true,
     },
     createdBy: {
-        type: mongoose_1.default.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "user",
         required: true,
     },
 }, { timestamps: true });
-exports.postModel = mongoose_1.default.model("post", postSchema);
+export const postModel = mongoose.model("post", postSchema);

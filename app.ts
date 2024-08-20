@@ -1,10 +1,10 @@
 import express from 'express'
 import cors from 'cors'
-import { errorMiddleWare } from './src/utils/apiError'
+import { errorMiddleWare } from './src/utils/apiError.js'
 import cookieParser from 'cookie-parser';
-import userRouter from './src/routes/user.routes';
-import postRouter from './src/routes/post.routes';
-import commentRouter from './src/routes/comment.routes';
+import userRouter from './src/routes/user.routes.js';
+import postRouter from './src/routes/post.routes.js';
+import commentRouter from './src/routes/comment.routes.js';
 
 const app = express()
 
