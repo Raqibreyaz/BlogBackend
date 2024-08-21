@@ -1,5 +1,7 @@
 # MyBlog - Backend
 
+[Deployed_Link](https://my-blog-raqib.netlify.app)
+
 MyBlog is a full-stack blogging application where users can register, log in, view posts by pagination, add posts, edit posts, comment on posts, and view comments by pagination. This repository contains the backend of the application, built with Node.js, Express, and MongoDB.
 
 ## Features
