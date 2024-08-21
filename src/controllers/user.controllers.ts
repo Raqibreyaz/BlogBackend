@@ -90,6 +90,8 @@ const logoutUser = catchAsyncError(async (req, res, next) => {
     .cookie("userToken", "", {
       expires: new Date(Date.now()),
       httpOnly: true,
+      secure:true,
+      sameSite:"none"
     })
     .json({
       success: true,
