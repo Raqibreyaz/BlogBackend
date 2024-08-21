@@ -2,12 +2,13 @@ import { ApiError } from "../utils/apiError.js";
 import jwt from "jsonwebtoken";
 import { postModel } from "../models/post.models.js";
 import { catchAsyncError } from "../utils/catchAsyncError.js";
+import envs from "../utils/getEnvironmentVar.js";
 // if token is valid then return the decoded token otherwise return false
 const validateToken = (token) => {
     if (!token)
         return false;
     try {
-        return jwt.verify(token, process.env.JWT_SECRET_KEY);
+        return jwt.verify(token, envs.JWT_SECRET_KEY);
     }
     catch (error) {
         return false;

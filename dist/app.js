@@ -5,9 +5,10 @@ import cookieParser from 'cookie-parser';
 import userRouter from './src/routes/user.routes.js';
 import postRouter from './src/routes/post.routes.js';
 import commentRouter from './src/routes/comment.routes.js';
+import envs from './src/utils/getEnvironmentVar.js';
 const app = express();
 app.use(cors({
-    origin: process.env.FRONTEND_URL,
+    origin: envs.FRONTEND_URL,
     credentials: true,
     methods: ['PUT', 'POST', 'GET', 'PATCH', 'DELETE']
 }));

@@ -1,9 +1,11 @@
 import { ApiError } from "./apiError.js";
+import envs from "./getEnvironmentVar.js";
 export const assignJwtToken = (user, res, message) => {
     let tokenName = `userToken`;
-    const cookieExpiry = process.env.COOKIE_EXPIRY;
-    if (!cookieExpiry)
+    const cookieExpiry = envs.COOKIE_EXPIRY;
+    if (!cookieExpiry) {
         throw new ApiError(400, "environment variable not setted");
+    }
     let token = user.generateToken();
     res
         .status(200)
