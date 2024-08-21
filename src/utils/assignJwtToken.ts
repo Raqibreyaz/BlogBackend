@@ -10,7 +10,10 @@ export const assignJwtToken = (
   let tokenName = `userToken`;
   const cookieExpiry = process.env.COOKIE_EXPIRY;
 
-  if (!cookieExpiry) throw new ApiError(400, "environment variable not setted");
+  if (!cookieExpiry) {
+    console.log("cookie expiry missing", cookieExpiry);
+    throw new ApiError(400, "environment variable not setted");
+  }
 
   let token = user.generateToken();
 

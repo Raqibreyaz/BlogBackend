@@ -48,16 +48,14 @@ userSchema.methods.generateToken = function () {
   const jwtSecret = process.env.JWT_SECRET_KEY;
   const jwtExpiry = process.env.JWT_EXPIRY;
 
-  if (!jwtSecret || !jwtExpiry)
+  if (!jwtSecret || !jwtExpiry) {
+    console.log("jwt secret or expiry missing", jwtSecret, jwtExpiry);
     throw new ApiError(400, "environment variable not setted");
+  }
 
-  return jwt.sign(
-    { id: this._id, email: this.email },
-    jwtSecret,
-    {
-      expiresIn: jwtExpiry,
-    }
-  );
+  return jwt.sign({ id: this._id, email: this.email }, jwtSecret, {
+    expiresIn: jwtExpiry,
+  });
 };
 
 export const userModel = mongoose.model<userInterface>("user", userSchema);
