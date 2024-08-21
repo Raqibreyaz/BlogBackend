@@ -1,6 +1,7 @@
 import { Response } from "express";
 import { userInterface } from "../interfaces/user.interfaces.js";
 import { ApiError } from "./apiError.js";
+import envs from "./getEnvironmentVar.js";
 
 export const assignJwtToken = (
   user: userInterface,
@@ -8,10 +9,9 @@ export const assignJwtToken = (
   message: string
 ) => {
   let tokenName = `userToken`;
-  const cookieExpiry = process.env.COOKIE_EXPIRY;
+  const cookieExpiry = envs.COOKIE_EXPIRY;
 
   if (!cookieExpiry) {
-    console.log("cookie expiry missing", cookieExpiry);
     throw new ApiError(400, "environment variable not setted");
   }
 

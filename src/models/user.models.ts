@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { imageSchema } from "./post.models.js";
 import { userInterface } from "../interfaces/user.interfaces.js";
-import { ApiError } from "../utils/apiError.js";
+import envs from "../utils/getEnvironmentVar.js";
 
 const userSchema: mongoose.Schema<userInterface> = new mongoose.Schema(
   {
@@ -45,16 +45,9 @@ userSchema.methods.comparePassword = async function (password: string) {
 };
 
 userSchema.methods.generateToken = function () {
-  const jwtSecret = process.env.JWT_SECRET_KEY;
-  const jwtExpiry = process.env.JWT_EXPIRY;
-
-  if (!jwtSecret || !jwtExpiry) {
-    console.log("jwt secret or expiry missing", jwtSecret, jwtExpiry);
-    throw new ApiError(400, "environment variable not setted");
-  }
-
-  return jwt.sign({ id: this._id, email: this.email }, jwtSecret, {
-    expiresIn: jwtExpiry,
+  console.log(envs);  
+  return jwt.sign({ id: this._id, email: this.email }, envs.JWT_SECRET_KEY!, {
+    expiresIn: envs.JWT_EXPIRY,
   });
 };
 

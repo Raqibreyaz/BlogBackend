@@ -4,6 +4,7 @@ import { Request, RequestHandler } from "express";
 import { postModel } from "../models/post.models.js";
 import { postInterface } from "../interfaces/post.interfaces.js";
 import { catchAsyncError } from "../utils/catchAsyncError.js";
+import envs from "../utils/getEnvironmentVar.js";
 
 interface CustomRequest extends Request {
   user?: JwtPayload;
@@ -14,7 +15,7 @@ interface CustomRequest extends Request {
 const validateToken = (token: string): JwtPayload | string | false => {
   if (!token) return false;
   try {
-    return jwt.verify(token, process.env.JWT_SECRET_KEY!);
+    return jwt.verify(token, envs.JWT_SECRET_KEY!);
   } catch (error) {
     return false;
   }
