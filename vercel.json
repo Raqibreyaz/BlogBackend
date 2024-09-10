@@ -1,16 +1,9 @@
 {
   "version": 2,
-  "name": "myblog",
   "builds": [
-    {
-      "src": "dist/**",
-      "use": "@vercel/node"
-    }
+    { "src": "server.ts", "use": "@vercel/node" }
   ],
   "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/dist/$1"
-    }
+    { "src": "/(.*)", "dest": "/server.ts" }
   ]
 }
