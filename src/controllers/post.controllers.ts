@@ -68,15 +68,18 @@ const fetchPosts = catchAsyncError(async (req, res, next) => {
     typeof search !== "string"
   )
     throw new ApiError(400, "invalid query params provided");
+
+  const postFilter = {
+    title: { $regex: search, $options: "i" },
+  };
+
   //   find all the posts where the title is included in case insensitive mannerF
   const result = await postModel.aggregate([
     {
       $facet: {
         data: [
           {
-            $match: {
-              title: { $regex: search, $options: "i" },
-            },
+            $match: postFilter,
           },
           {
             $skip: (page - 1) * limit,
@@ -106,6 +109,9 @@ const fetchPosts = catchAsyncError(async (req, res, next) => {
           },
         ],
         totalPosts: [
+          {
+            $match: postFilter,
+          },
           {
             $count: "count",
           },
@@ -150,7 +156,11 @@ const fetchPostDetails = catchAsyncError(async (req, res, next) => {
       $project: {
         title: 1,
         content: 1,
-        creator: { _id: "$createdBy", username: "$creatorDetails.username",image:"$creatorDetails.image.url" },
+        creator: {
+          _id: "$createdBy",
+          username: "$creatorDetails.username",
+          image: "$creatorDetails.image.url",
+        },
         createdAt: 1,
         image: "$image.url",
       },

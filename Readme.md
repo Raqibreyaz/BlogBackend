@@ -13,7 +13,7 @@ MyBlog is a full-stack blogging application where users can register, log in, vi
 - **MongoDB**: Mongoose is used for database interactions and schema management.
 
 ## Tech Stack
-- **Node.js**: v16.x.x
+- **Node.js**: v20.x.x
 - **Express**: v4.19.2
 - **Mongoose**: v8.5.3
 - **JWT Authentication**: Managed with `jsonwebtoken`
@@ -23,7 +23,6 @@ MyBlog is a full-stack blogging application where users can register, log in, vi
 To get started with the backend of MyBlog, follow these steps:
 
 1. **Clone the repository**:
-   ```bash
    git clone [\[backend-repo-url\]](https://github.com/Raqibreyaz/BlogBackend.git)
    cd backend-repo
 
